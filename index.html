@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大富豪IF診断 | もしも大富豪になったら？</title>
+    <!-- Chart.js (レーダーチャート用) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-color: #d4af37; /* ゴールド */
+            --text-color: #c9d1d9;
+            --text-bright: #ffffff;
+            --btn-hover: #f3d06c;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover);
+            transform: translateY(-2px);
+        }
+
+        /* 診断中画面 */
+        .hidden { display: none !important; }
+        
+        .progress-bar {
+            background-color: #21262d;
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress {
+            background-color: var(--accent-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-bright);
+            min-height: 60px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #21262d;
+            color: var(--text-color);
+            border: 1px solid #30363d;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            background-color: #30363d;
+            color: var(--text-bright);
+            border-color: var(--accent-color);
+        }
+
+        /* 結果画面 */
+        .result-title {
+            font-size: 16px;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        .type-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--text-bright);
+            margin-bottom: 5px;
+        }
+        .catchphrase {
+            font-style: italic;
+            color: #8b949e;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        /* 画像表示エリア */
+        .character-img-box {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
+            border: 2px solid var(--accent-color);
+        }
+        .character-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chart-container {
+            position: relative;
+            margin: 0 auto 25px auto;
+            height: 250px;
+            width: 250px;
+        }
+        .bio-text {
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--accent-color);
+        }
+        .compatibility-box {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .comp-card {
+            flex: 1;
+            background: #21262d;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        .comp-card.best { border: 1px solid #238636; }
+        .comp-card.worst { border: 1px solid #da3637; }
+        .comp-title { font-weight: bold; margin-bottom: 5px; }
+        .comp-name { color: var(--text-bright); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- START PAGE -->
+    <div id="start-view" class="card">
+        <h1>大富豪IF診断</h1>
+        <p class="description">もしもあなたが大富豪になったら、どんな資産家になる？<br>あなたの稼ぎ方・使い方の癖から、眠れる富豪タイプとステータスを暴き出す16タイプ診断。</p>
+        <button class="btn" onclick="startQuiz()">診断をスタートする</button>
+    </div>
+
+    <!-- QUIZ PAGE -->
+    <div id="quiz-view" class="card hidden">
+        <div class="progress-bar"><div id="progress" class="progress"></div></div>
+        <div id="question-text" class="question-text">質問がここに表示されます</div>
+        <div class="options-list">
+            <button class="option-btn" onclick="answerQuestion(3)">めちゃくちゃ当てはまる</button>
+            <button class="option-btn" onclick="answerQuestion(2)">まあまあ当てはまる</button>
+            <button class="option-btn" onclick="answerQuestion(1)">あまり当てはまらない</button>
+            <button class="option-btn" onclick="answerQuestion(0)">全く当てはまらない</button>
+        </div>
+    </div>
+
+    <!-- RESULT PAGE -->
+    <div id="result-view" class="card hidden">
+        <div class="result-title">YOUR TYPE IS...</div>
+        <div id="type-name" class="type-name">診断中...</div>
+        <div id="catchphrase" class="catchphrase">...</div>
+        
+        <!-- 画像表示枠 -->
+        <div class="character-img-box">
+            <img id="type-img" src="" alt="キャラクター画像">
+        </div>
+
+        <div class="chart-container">
+            <canvas id="statusChart"></canvas>
+        </div>
+
+        <div id="bio-text" class="bio-text">...</div>
+
+        <div class="compatibility-box">
+            <div class="comp-card best">
+                <div class="comp-title" style="color:#238636;">➔ 相性最強の相棒</div>
+                <div id="best-name" class="comp-name">...</div>
+            </div>
+            <div class="comp-card worst">
+                <div class="comp-title" style="color:#da3637;">➔ 相性最凶の天敵</div>
+                <div id="worst-name" class="comp-name">...</div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="location.reload()">もう一度診断する</button>
+    </div>
+</div>
+
+<script>
+    // 20問の質問データ
+    const questions = [
+        { id: 1, text: "収入を増やすなら、節約するより「新しいビジネスや副業で稼ぐ額を増やす」方がワクワクする。" },
+        { id: 2, text: "大金を手に入れたら、静かに一人で引きこもるより、盛大なパーティーや旅行で仲間とパーッと使いたい。" },
+        { id: 3, text: "人脈はお集（資産）だと思う。いろいろな業界の人と繋がる席には積極的に顔を出したい。" },
+        { id: 4, text: "ビジネスや職場で、リーダーとして人を動かして成果を上げることに快感を覚える。" },
+        { id: 5, text: "高級時計やブランド服、高級車など「誰もが一目で良いとわかる一流のモノ」に惹かれる。" },
+        { id: 6, text: "買い物をする時は、コスパや実用性よりも「自分のこだわり」や「ストーリー（感情）」を最優先する。" },
+        { id: 7, text: "「宇宙旅行」や「誰もやったことがない新しい事業」など、ロマンがあるものになら大金を投じてもいい。" },
+        { id: 8, text: "好きなアイドルやアニメ、趣味（推し）のためなら、生活費を削ってでもお金を注ぎ込める。" },
+        { id: 9, text: "投資や大きな買い物をする時は、直感ではなくデータやチャート、期待値を徹底的に分析して決める。" },
+        { id: 10, text: "自分が大富豪になったら、高級品を買うよりも、恵まれない人への寄付や社会貢献にお金を使いたい。" },
+        { id: 11, text: "友達や後輩と食事に行く時は、割り勘にするより、自分が全額奢って格好つけたい気持ちが強い。" },
+        { id: 12, text: "「絶対儲かる」と言われても、怪しいと感じるビジネスや、人のためにならない稼ぎ方には絶対に手を染めない。" },
+        { id: 13, text: "毎月の収支や貯蓄のペースは、ある程度計画通りにコントロールできていないと不安になる。" },
+        { id: 14, text: "投資をするなら、元本割れのリスクがほぼない「超手堅いインデックス投資や国債」が一番落ち着く。" },
+        { id: 15, text: "セール品や「期間限定」の文字を見ると、予定になかったものでもついつい買ってしまう。" },
+        { id: 16, text: "財布の中にいくら入っているか、今月カードをいくら使ったかを常に把握している。" },
+        { id: 17, text: "これまでの人生、金銭的・精神的なピンチの時に「なぜか誰かに助けられたり、臨時収入が入ったりした」経験がよくある。" },
+        { id: 18, text: "宝くじやギャンブル、あるいは直感で選んだ投資先が「なぜか当たってしまう」という野生の勘がある。" },
+        { id: 19, text: "初対面のお金持ちや目上の人に、なぜか気に入られたり、可愛がられたりしやすいタイプだと思う。" },
+        { id: 20, text: "根拠はなくても、「自分は将来、なんだかんだでお金に困らない人生を送るだろう」という謎の自信がある。" }
+    ];
+
+    // 16タイプの完全クリーンデータ（type1.png 〜 type16.png に綺麗に対応）
+    const typeDatabase = {
+        "ESTP": { name: "シリコンバレーの風雲児", img: "type1.png", catch: "「リスクは取るものではない。マネジメントするものだ」", bio: "破壊的なイノベーションと圧倒的な行動力で、ゼロから巨万の富を築き上げるカリスマ起業家。お金は次の面白いビジネスを仕掛けるための「弾丸」。新しい波に全財産を突っ込む度胸の持ち主。", best: "要塞の守護神", worst: "強運のギャンブラー", status: [5,1,4,5,4] },
+        "ESFP": { name: "マハラジャ・キング", img: "type2.png", catch: "「お金で買えない価値？まずは買ってから言ってみな」", bio: "入ってきたお金は最高の方法で使い切る、経済を回す主役にしてリアル・エンターテイナー。タワマン、スーパーカーなど誰もが一目でわかる富の象徴を愛します。ケチケチした計算は大嫌いな豪快タイプ。", best: "美の蒐集家", worst: "孤独の隠者", status: [4,1,3,4,5] },
+        "ENFJ": { name: "キングメーカー", img: "type3.png", catch: "「私が投資しているのは、ビジネスではなく『あなた』だ」", bio: "「人脈こそが最大の資産」を体現する、若手育成とコミュニティ投資の黒幕。才能ある若者やベンチャーのエンジェル投資家になり、信頼関係のネットワークを構築することに無上の喜びを感じます。", best: "ストリートの革命児", worst: "データ至上主義のAI", status: [3,3,4,5,3] },
+        "ESTJ": { name: "プロフェッショナル・ボス", img: "type4.png", catch: "「運に頼るな。数字と実績だけを信じろ」", bio: "自分の圧倒的なスキルと労働、そして構築した組織の力でロジカルに稼ぐマシーン。贅沢そのものよりも市場で勝ち、稼ぐプロセスそのものが趣味。無駄な支出には非常に厳しいリアリストです。", best: "現代の錬金術師", worst: "愛され上手なタニマチ", status: [5,4,1,5,2] },
+        "INTJ": { name: "現代の錬金術師", img: "type5.png", catch: "「私が寝ている間も、私の仕組みが稼いでいる」", bio: "株・不動産・自動化ビジネスを組み合わせ、一歩も家から出ずに富を増殖させる天才システム屋。自分が動かなくても回る不労所得の仕組みを作るのが天才的で、資産が増える数字を眺めるのが至福の時。", best: "プロフェッショナル・ボス", worst: "気まぐれな神様", status: [4,5,2,2,1] },
+        "ISTJ": { name: "要塞の守護神", img: "type6.png", catch: "「お金を増やす最良の方法は、使わないことだ」", bio: "1円の無駄も許さない鉄壁のディフェンス。地味に見えて、気づけば一番資産を持っている大番頭。徹底的にリスクを排除した守りのポートフォリオで資産を絶対に減らさない、信頼の塊です。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,2,2,0] },
+        "INTP": { name: "孤独の隠者（FIREマスター）", img: "type7.png", catch: "「お金で買える最高の商品は、高級車ではなく『時間』だ」", bio: "数億円の資産を持ちながらも、見た目は完全に一般人。週休7日の「自由」を買った思想家。物欲が驚くほど低く、しがらみから解き放たれて自分の興味のある研究や趣味に没頭します。", best: "データ至上主義のAI", worst: "マハラジャ・キング", status: [3,4,3,1,1] },
+        "ISTP": { name: "データ至上主義のAI", img: "type8.png", catch: "「相場に感情はない。だから私も感情を持たない」", bio: "感情を100%排除し、期待値とアルゴリズムだけで淡々とお金をハッキングする孤高のクオンツ。直感や情での投資は一切せず、合理的な計算に基づき冷徹に資産を拡大していきます。", best: "孤独の隠者", worst: "愛の慈善家", status: [4,4,2,1,2] },
+        "ISFP": { name: "美の蒐集家（コレクター）", img: "type9.png", catch: "「私が買うのはモノではない。歴史と美そのものだ」", bio: "自分の圧倒的な「好き」と「審美眼」に従った結果、それが歴史的資産になってしまう天才。アート、ヴィンテージなど自分の五感を刺激するものに全財産を注ぎ込み、結果的に大富豪になります。", best: "マハラジャ・キング", worst: "要塞の守護神", status: [3,2,4,2,5] },
+        "INFJ": { name: "愛の慈善家（ビル・ゲイツ型）", img: "type10.png", catch: "「富の価値は、どれだけ集めたかではなく、どれだけ配ったかで決まる」", bio: "富を得た最終目的は「世界を救うこと」。お金を最高の徳に変える現代の聖人。医療、環境、貧困撲滅などの財団に数億円単位の寄付を平気で行います。私利私欲の散財はほぼゼロです。", best: "キングメーカー", worst: "データ至上主義のAI", status: [2,3,4,4,4] },
+        "ENFP": { name: "沼の主（ぬしのぬし）", img: "type11.png", catch: "「私の課金が、このコンテンツを延命させている」", bio: "自分の「推し」や「エンタメ」の市場を一人で支える、究極のパトロンにして最強の消費者。自分が「尊い」と思った対象に底なしの資金を注ぎ込み、業界の神として崇められる大富豪です。", best: "気まぐれな神様", worst: "プロフェッショナル・ボス", status: [3,1,4,4,5] },
+        "ENTP": { name: "ロマン派の冒険家", img: "type12.png", catch: "「成功するかは分からない。だからこそ、大金を払う価値がある」", bio: "知的好奇心の塊。誰も挑戦していない未開拓なプロジェクトや、面白そうな企画に一瞬で大金を投じる仕掛け人。スリルと新しい体験をお金で買うため、支出もダイナミックです。", best: "強運のギャンブラー", worst: "要塞の守護神", status: [4,1,3,5,5] },
+        "ENTJ": { name: "ロマン派の冒険家", img: "type12.png", catch: "「成功するかは分からない。だからこそ、大金を払う価値がある」", bio: "「誰も見たことがない景色」を見るためなら、数億ドルのドブ捨ても厭わない宇宙開拓者。現状維持が大嫌いで、スリルと知的好奇心を満たすためにお金を使います。失敗しても折れないメンタルが最強。", best: "強運のギャンブラー", worst: "要塞の守護神", status: [4,1,3,5,5] },
+        "ENFJ_LUCKY": { name: "強運のギャンブラー", img: "type13.png", catch: "「ロジックが死んでも、俺の直感は生きている」", bio: "圧倒的な「野生の勘」で勝負所を当て続ける一発逆転の天才。仮想通貨や暴落株に「波が来ている」という直感だけで全賭けし大富豪になったタイプ。土壇場での引きの強さがカンストしています。", best: "ロマン派の冒険家", worst: "シリコンバレーの風雲児", status: [4,1,5,3,4] },
+        "INFP": { name: "ストリートの革命児", img: "type15.png", catch: "「みんなが気づいた時には、もう私の仕込みは終わっている」", bio: "時代の微かな空気感を察知し、SNSやWEBの波に乗って一瞬で億を掴んだトレンドの申し子。個人の発信力やコンテンツのバズらせ方が天才的で、既存の枠に囚われない新しい稼ぎ方を開拓します。", best: "キングメーカー", worst: "要塞の守護神", status: [4,2,4,4,3] },
+        "ESFJ": { name: "気まぐれな神様", img: "type16.png", catch: "「お金を配れば、みんなが笑顔になる。これ以上の使い道がある？」", bio: "お金を使って人を驚かせたり、喜ばせたりすることが生きがいのリアル福の神。飲食店に行けば店中の人に奢り、SNSではド派手なプレゼント企画を連発。お金を出すことで主役になる劇場型大富豪。", best: "沼の主", worst: "現代の錬金術師", status: [3,1,4,5,5] },
+        "ISFJ": { name: "要塞の守護神", img: "type6.png", catch: "「堅実に守り、身近な人をそっと支える」", bio: "無駄遣いをせず、慎ましく堅実に資産を守り抜く安定の富豪。派手な生活は好まず、家族や本当に大切な人のためだけにそっとお金を使える、優しきディフェンダーです。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,3,2,1] }
+    };
+
+    // タニマチ用（type14）
+    const luckyType = { name: "愛され上手なタニマチ", img: "type14.png", catch: "「自分で稼ぐ必要ある？みんながくれるのに」", bio: "本人はガツガツ働いていないのに、なぜかお金持ちから莫大な資産やプレゼントを引き寄せる天性の愛されキャラ。人の懐に入るのが天才的に上手く、お財布愛され力だけで生き抜く大富豪。", best: "マハラジャ・キング", worst: "プロフェッショナル・ボス", status: [1,2,5,4,3] };
+
+    let currentQuestionIndex = 0;
+    let scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+
+    function startQuiz() {
+        document.getElementById('start-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQuestionIndex];
+        document.getElementById('question-text').innerText = q.text;
+        document.getElementById('progress').style.width = `${((currentQuestionIndex) / questions.length) * 100}%`;
+    }
+
+    function answerQuestion(points) {
+        if (currentQuestionIndex < 4) scores.A += points;
+        else if (currentQuestionIndex < 8) scores.B += points;
+        else if (currentQuestionIndex < 12) scores.C += points;
+        else if (currentQuestionIndex < 16) scores.D += points;
+        else scores.E += points;
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-view').classList.add('hidden');
+        document.getElementById('result-view').classList.remove('hidden');
+
+        const typeA = scores.A >= 6 ? "E" : "I";
+        const typeB = scores.B >= 6 ? "S" : "N";
+        const typeC = scores.C >= 6 ? "T" : "F";
+        const typeD = scores.D >= 6 ? "J" : "P";
+        
+        let typeCode = typeA + typeB + typeC + typeD;
+        
+        // ギャンブラーの特別分岐
+        if (typeCode === "ESTP" && scores.E >= 9) {
+            typeCode = "ENFJ_LUCKY";
+        }
+
+        let resultType = typeDatabase[typeCode] || typeDatabase["ESTP"];
+
+        // タニマチの特別分岐
+        if (scores.E >= 10 && typeA === "I") {
+            resultType = luckyType;
+        }
+
+        // ステータス計算
+        let finalStatus = [
+            Math.min(5, Math.max(1, Math.round((scores.A + scores.B) / 4) + 1)),
+            Math.min(5, Math.max(1, Math.round((scores.D + (12 - scores.B)) / 4))),
+            Math.min(5, Math.max(1, Math.round(scores.E / 2.5))),
+            Math.min(5, Math.max(1, Math.round((scores.A + scores.C) / 4) + 1)),
+            Math.min(5, Math.max(1, Math.round((scores.B + (12 - scores.D)) / 4)))
+        ];
+
+        for(let i=0; i<5; i++) {
+            finalStatus[i] = Math.round((finalStatus[i] + resultType.status[i]) / 2);
+        }
+
+        // 画面への反映
+        document.getElementById('type-name').innerText = resultType.name;
+        document.getElementById('catchphrase').innerText = resultType.catch;
+        document.getElementById('bio-text').innerText = resultType.bio;
+        document.getElementById('best-name').innerText = resultType.best;
+        document.getElementById('worst-name').innerText = resultType.worst;
+
+        // 画像の読み込み
+        document.getElementById('type-img').src = "images/" + resultType.img;
+
+        // チャートの描画
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['攻撃力', '防御力', '幸運度', '影響力', '散財度'],
+                datasets: [{
+                    data: finalStatus,
+                    backgroundColor: 'rgba(214, 175, 55, 0.2)',
+                    borderColor: 'rgba(214, 175, 55, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(214, 175, 55, 1)',
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    r: {
+                        angleLines: { color: '#30363d' },
+                        grid: { color: '#30363d' },
+                        pointLabels: { color: '#c9d1d9', font: { size: 12 } },
+                        ticks: { display: false },
+                        min: 0,
+                        max: 5
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
