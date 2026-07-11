@@ -164,7 +164,6 @@
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
         }
         
-        /* 【向上】トップ用スライドショーの画像配置 */
         .character-img-box img {
             width: 100%;
             height: 100%;
@@ -175,7 +174,6 @@
             opacity: 0;
             transition: opacity 1s ease-in-out;
         }
-        /* アクティブな画像のみ表示 */
         .character-img-box img.active {
             opacity: 1;
         }
@@ -184,6 +182,15 @@
             background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0) 70%);
             padding: 10px 0;
             margin-bottom: 20px;
+        }
+
+        /* 【追加】結果画面での数値表示スタイル */
+        .score-display {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            margin: 15px 0 5px 0;
         }
 
         .chart-container {
@@ -220,7 +227,7 @@
         .comp-title { font-weight: bold; margin-bottom: 5px; }
         .comp-name { color: var(--text-bright); font-size: 13px; }
 
-        /* 【変更】アイコン化した新・SNSボタンエリア */
+        /* ボタンエリア */
         .action-area {
             margin-top: 30px;
             display: flex;
@@ -278,9 +285,8 @@
         <p class="description">もしもあなたが大富豪になったら、どんな資産家になる？<br>あなたの稼ぎ方・使い方の癖から、眠れる富豪タイプとステータスを暴き出す16タイプ診断。</p>
         
         <div class="hero-box">
-            <!-- 【向上】全16キャラがここにフェードインで順次表示されます -->
             <div class="character-img-box" id="top-slideshow">
-                <!-- JavaScriptで16枚の画像が自動生成・制御されます -->
+                <!-- JavaScriptで16枚の画像が自動生成されます -->
             </div>
         </div>
         
@@ -310,6 +316,9 @@
             <img id="type-img" src="" alt="キャラクター画像" class="active">
         </div>
 
+        <!-- 【追加】結果画面に「将来のお金持ち度」の数値をわかりやすく表示 -->
+        <div id="score-text" class="score-display">将来のお金持ち度: --%</div>
+
         <div class="chart-container">
             <canvas id="statusChart"></canvas>
         </div>
@@ -327,19 +336,19 @@
             </div>
         </div>
 
-        <!-- 【変更】アイコン設置＆アプリ連動対応したボタンエリア -->
+        <!-- 【修正】ご指定の文字表記（POST / STORY）にアップデート -->
         <div class="action-area">
             <div class="sns-row">
-                <!-- 𝕏 アイコンボタン -->
+                <!-- 𝕏 アイコン + POST -->
                 <a href="#" id="share-x" class="btn-sns" target="_blank">
-                    <i class="fa-brands fa-x-twitter"></i> ポストする
+                    <i class="fa-brands fa-x-twitter"></i> POST
                 </a>
-                <!-- Instagram アイコンボタン (ストーリー起動リンク) -->
+                <!-- Instagram アイコン + STORY -->
                 <a href="instagram://camera" id="share-insta" class="btn-sns" onclick="openInsta(event)">
-                    <i class="fa-brands fa-instagram"></i> ストーリー
+                    <i class="fa-brands fa-instagram"></i> STORY
                 </a>
             </div>
-            <div class="insta-note">※スクショを撮ってからストーリーボタンを押してね！</div>
+            <div class="insta-note">※スクショを撮ってからSTORYボタンを押してね！</div>
             
             <!-- LINEスタンプ導線 -->
             <a href="https://line.me/S/shop/sticker/..." id="line-stamp-link" class="btn-sns btn-line" target="_blank">
@@ -384,7 +393,7 @@
         "ESTJ": { name: "プロフェッショナル・ボス", img: "type4.png", catch: "「運に頼るな。数字と実績だけを信じろ」", bio: "自分の圧倒的なスキルと労働、精度高く構築した組織の力でロジカルに稼ぐマシーン。贅沢そのものよりも市場で勝ち、稼ぐプロセスそのものが趣味。無駄な支出には非常に厳しいリアリストです。", best: "現代の錬金術師", worst: "愛され上手なタニマチ", status: [5,4,1,5,2] },
         "INTJ": { name: "現代の錬金術師", img: "type5.png", catch: "「私が寝ている間も、私の仕組みが稼いでいる」", bio: "株・不動産・自動化ビジネスを組み合わせ、一歩も家から出ずに富を増殖させる天才システム屋。自分が動かなくても回る不労所得の仕組みを作るのが天才的で、資産が増える数字を眺めるのが至福の時。", best: "プロフェッショナル・ボス", worst: "気まぐれな神様", status: [4,5,2,2,1] },
         "ISTJ": { name: "要塞の守護神", img: "type6.png", catch: "「お金を増やす最良の方法は、使わないことだ」", bio: "1円の無駄も許さない鉄壁のディフェンス。地味に見えて、気づけば一番資産を持っている大番頭。徹底的にリスクを排除した守りのポートフォリオで資産を絶対に減らさない、信頼の塊です。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,2,2,0] },
-        "INTP": { name: "孤独の隠者（FIREマスター）", img: "type7.png", catch: "「お金で買える最高の商品は、高級車ではなく『時間』だ」", bio: "数億円の資産を持ちながらも、見た目は完全に一般人。週休7日の「自由」を買った思想家。物欲が驚くほど低く、しやらみから解き放たれて自分の興味のある研究や趣味に没頭します。", best: "データ至上主義のAI", worst: "マハラジャ・キング", status: [3,4,3,1,1] },
+        "INTP": { name: "孤独の隠者（FIREマスター）", img: "type7.png", catch: "「お金で買える最高の商品は、高級車ではなく『時間』だ」", bio: "数億円の資産を持ちながらも、見た目は完全に一般人。週休7日の「自由」を買った思想家。物欲が驚くほど低く、しがらみから解き放たれて自分の興味のある研究や趣味に没頭します。", best: "データ至上主義のAI", worst: "マハラジャ・キング", status: [3,4,3,1,1] },
         "ISTP": { name: "データ至上主義のAI", img: "type8.png", catch: "「相場に感情はない。だから私も感情を持たない」", bio: "感情を100%排除し、期待値とアルゴリズムだけで淡々とお金をハッキングする孤高のクオンツ。直感や情での投資は一切せず、合理的な計算に基づき冷徹に資産を拡大していきます。", best: "孤独の隠者", worst: "愛の慈善家", status: [4,4,2,1,2] },
         "ISFP": { name: "美の蒐集家（コレクター）", img: "type9.png", catch: "「私が買うのはモノではない。歴史と美そのものだ」", bio: "自分の圧倒的な「好き」と「審美眼」に従った結果、それが歴史的資産になってしまう天才。アート、ヴィンテージなど自分の五感を刺激するものに全財産を注ぎ込み、結果的に大富豪になります。", best: "マハラジャ・キング", worst: "要塞の守護神", status: [3,2,4,2,5] },
         "INFJ": { name: "愛の慈善家（ビル・ゲイツ型）", img: "type10.png", catch: "「富の価値は、どれだけ集めたかではなく、どれだけ配ったかで決まる」", bio: "富を得た最終目的は「世界を救うこと」。お金を最高の徳に変える現代の聖人。医療、環境、貧困撲滅などの財団に数億円単位の寄付を平気で行います。私利私欲の散財はほぼゼロです。", best: "キングメーカー", worst: "データ至上主義のAI", status: [2,3,4,4,4] },
@@ -402,21 +411,18 @@
     let currentQuestionIndex = 0;
     let scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
 
-    // 【追加】トップページ起動時に全16種の画像を自動セット＆スライドショー開始
     window.onload = function() {
         const container = document.getElementById('top-slideshow');
-        // type1〜type16の画像を動的生成
         for (let i = 1; i <= 16; i++) {
             const img = document.createElement('img');
             img.src = `images/type${i}.png`;
             img.alt = `キャラクター候補 ${i}`;
-            if (i === 1) img.classList.add('active'); // 最初の1枚を表示
+            if (i === 1) img.classList.add('active');
             container.appendChild(img);
         }
         startTopSlideshow();
     };
 
-    // トップのスライドショー制御
     function startTopSlideshow() {
         const images = document.querySelectorAll('#top-slideshow img');
         let currentIndex = 0;
@@ -426,18 +432,13 @@
             images[currentIndex].classList.remove('active');
             currentIndex = (currentIndex + 1) % images.length;
             images[currentIndex].classList.add('active');
-        }, 2500); // 2.5秒ごとに滑らかに切り替え
+        }, 2500);
     }
 
-    // Instagramアプリ起動の特殊ロジック
     function openInsta(e) {
         e.preventDefault();
         alert('画面のスクリーンショットを撮影しましたか？\nOKを押すとInstagramのストーリー（カメラ）が起動します。');
-        
-        // ユニバーサルリンク・ディープリンクを叩く
         window.location.href = "instagram://camera";
-        
-        // アプリがインストールされていない場合のブラウザフォールバック
         setTimeout(() => {
             window.open("https://www.instagram.com/", "_blank");
         }, 1500);
@@ -514,6 +515,9 @@
         document.getElementById('bio-text').innerText = resultType.bio;
         document.getElementById('best-name').innerText = resultType.best;
         document.getElementById('worst-name').innerText = resultType.worst;
+
+        // 【変更】結果画面のテキスト要素へ計算した数値を反映
+        document.getElementById('score-text').innerText = `将来のお金持ち度: ${wealthPercent}%`;
 
         document.getElementById('type-img').src = "images/" + resultType.img;
 
