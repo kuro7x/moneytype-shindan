@@ -2,10 +2,13 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大富豪IF診断 | もしも大富豪になったら？</title>
+    <!-- スマホでの強制ズーム・画面拡大を防ぐ設定 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>マネータイプ診断 | もしも大富豪になったら？</title>
     <!-- Chart.js (レーダーチャート用) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SVGアイコン表示用のFontAwesome (無料版) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #0d1117;
@@ -26,6 +29,9 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .container {
@@ -147,6 +153,7 @@
         
         /* 画像表示エリア */
         .character-img-box {
+            position: relative;
             width: 200px;
             height: 200px;
             margin: 0 auto 20px auto;
@@ -154,18 +161,36 @@
             overflow: hidden;
             background-color: #000;
             border: 2px solid var(--accent-color);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
         }
+        
+        /* 【向上】トップ用スライドショーの画像配置 */
         .character-img-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        /* アクティブな画像のみ表示 */
+        .character-img-box img.active {
+            opacity: 1;
+        }
+
+        .hero-box {
+            background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0) 70%);
+            padding: 10px 0;
+            margin-bottom: 20px;
         }
 
         .chart-container {
             position: relative;
             margin: 0 auto 25px auto;
-            height: 250px;
-            width: 250px;
+            height: 260px;
+            width: 260px;
         }
         .bio-text {
             text-align: left;
@@ -194,6 +219,54 @@
         .comp-card.worst { border: 1px solid #da3637; }
         .comp-title { font-weight: bold; margin-bottom: 5px; }
         .comp-name { color: var(--text-bright); font-size: 13px; }
+
+        /* 【変更】アイコン化した新・SNSボタンエリア */
+        .action-area {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .sns-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+        .btn-sns {
+            flex: 1;
+            background-color: #0d1117;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-sns:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+        .btn-line {
+            background: linear-gradient(90deg, #06C755 0%, #05B34B 100%);
+            color: #fff;
+            border: none;
+        }
+        .btn-line:hover {
+            background: linear-gradient(90deg, #05B34B 0%, #049A40 100%);
+            opacity: 0.9;
+        }
+        .insta-note {
+            font-size: 11px;
+            color: #8b949e;
+            margin-top: -5px;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -201,8 +274,16 @@
 <div class="container">
     <!-- START PAGE -->
     <div id="start-view" class="card">
-        <h1>大富豪IF診断</h1>
+        <h1>マネータイプ診断</h1>
         <p class="description">もしもあなたが大富豪になったら、どんな資産家になる？<br>あなたの稼ぎ方・使い方の癖から、眠れる富豪タイプとステータスを暴き出す16タイプ診断。</p>
+        
+        <div class="hero-box">
+            <!-- 【向上】全16キャラがここにフェードインで順次表示されます -->
+            <div class="character-img-box" id="top-slideshow">
+                <!-- JavaScriptで16枚の画像が自動生成・制御されます -->
+            </div>
+        </div>
+        
         <button class="btn" onclick="startQuiz()">診断をスタートする</button>
     </div>
 
@@ -224,9 +305,9 @@
         <div id="type-name" class="type-name">診断中...</div>
         <div id="catchphrase" class="catchphrase">...</div>
         
-        <!-- 画像表示枠 -->
+        <!-- 結果画像表示枠 -->
         <div class="character-img-box">
-            <img id="type-img" src="" alt="キャラクター画像">
+            <img id="type-img" src="" alt="キャラクター画像" class="active">
         </div>
 
         <div class="chart-container">
@@ -246,7 +327,27 @@
             </div>
         </div>
 
-        <button class="btn" onclick="location.reload()">もう一度診断する</button>
+        <!-- 【変更】アイコン設置＆アプリ連動対応したボタンエリア -->
+        <div class="action-area">
+            <div class="sns-row">
+                <!-- 𝕏 アイコンボタン -->
+                <a href="#" id="share-x" class="btn-sns" target="_blank">
+                    <i class="fa-brands fa-x-twitter"></i> ポストする
+                </a>
+                <!-- Instagram アイコンボタン (ストーリー起動リンク) -->
+                <a href="instagram://camera" id="share-insta" class="btn-sns" onclick="openInsta(event)">
+                    <i class="fa-brands fa-instagram"></i> ストーリー
+                </a>
+            </div>
+            <div class="insta-note">※スクショを撮ってからストーリーボタンを押してね！</div>
+            
+            <!-- LINEスタンプ導線 -->
+            <a href="https://line.me/S/shop/sticker/..." id="line-stamp-link" class="btn-sns btn-line" target="_blank">
+                <i class="fa-brands fa-line"></i> このキャラのLINEスタンプをGET
+            </a>
+        </div>
+
+        <button class="btn" onclick="location.reload()" style="background-color: #21262d; color: var(--text-color); border: 1px solid #30363d; margin-top: 10px;">もう一度診断する</button>
     </div>
 </div>
 
@@ -255,7 +356,7 @@
     const questions = [
         { id: 1, text: "収入を増やすなら、節約するより「新しいビジネスや副業で稼ぐ額を増やす」方がワクワクする。" },
         { id: 2, text: "大金を手に入れたら、静かに一人で引きこもるより、盛大なパーティーや旅行で仲間とパーッと使いたい。" },
-        { id: 3, text: "人脈はお集（資産）だと思う。いろいろな業界の人と繋がる席には積極的に顔を出したい。" },
+        { id: 3, text: "人脈はお金（資産）だと思う。いろいろな業界の人と繋がる席には積極的に顔を出したい。" },
         { id: 4, text: "ビジネスや職場で、リーダーとして人を動かして成果を上げることに快感を覚える。" },
         { id: 5, text: "高級時計やブランド服、高級車など「誰もが一目で良いとわかる一流のモノ」に惹かれる。" },
         { id: 6, text: "買い物をする時は、コスパや実用性よりも「自分のこだわり」や「ストーリー（感情）」を最優先する。" },
@@ -275,15 +376,15 @@
         { id: 20, text: "根拠はなくても、「自分は将来、なんだかんだでお金に困らない人生を送るだろう」という謎の自信がある。" }
     ];
 
-    // 16タイプの完全クリーンデータ（type1.png 〜 type16.png に綺麗に対応）
+    // 16タイプのデータ
     const typeDatabase = {
         "ESTP": { name: "シリコンバレーの風雲児", img: "type1.png", catch: "「リスクは取るものではない。マネジメントするものだ」", bio: "破壊的なイノベーションと圧倒的な行動力で、ゼロから巨万の富を築き上げるカリスマ起業家。お金は次の面白いビジネスを仕掛けるための「弾丸」。新しい波に全財産を突っ込む度胸の持ち主。", best: "要塞の守護神", worst: "強運のギャンブラー", status: [5,1,4,5,4] },
         "ESFP": { name: "マハラジャ・キング", img: "type2.png", catch: "「お金で買えない価値？まずは買ってから言ってみな」", bio: "入ってきたお金は最高の方法で使い切る、経済を回す主役にしてリアル・エンターテイナー。タワマン、スーパーカーなど誰もが一目でわかる富の象徴を愛します。ケチケチした計算は大嫌いな豪快タイプ。", best: "美の蒐集家", worst: "孤独の隠者", status: [4,1,3,4,5] },
         "ENFJ": { name: "キングメーカー", img: "type3.png", catch: "「私が投資しているのは、ビジネスではなく『あなた』だ」", bio: "「人脈こそが最大の資産」を体現する、若手育成とコミュニティ投資の黒幕。才能ある若者やベンチャーのエンジェル投資家になり、信頼関係のネットワークを構築することに無上の喜びを感じます。", best: "ストリートの革命児", worst: "データ至上主義のAI", status: [3,3,4,5,3] },
-        "ESTJ": { name: "プロフェッショナル・ボス", img: "type4.png", catch: "「運に頼るな。数字と実績だけを信じろ」", bio: "自分の圧倒的なスキルと労働、そして構築した組織の力でロジカルに稼ぐマシーン。贅沢そのものよりも市場で勝ち、稼ぐプロセスそのものが趣味。無駄な支出には非常に厳しいリアリストです。", best: "現代の錬金術師", worst: "愛され上手なタニマチ", status: [5,4,1,5,2] },
+        "ESTJ": { name: "プロフェッショナル・ボス", img: "type4.png", catch: "「運に頼るな。数字と実績だけを信じろ」", bio: "自分の圧倒的なスキルと労働、精度高く構築した組織の力でロジカルに稼ぐマシーン。贅沢そのものよりも市場で勝ち、稼ぐプロセスそのものが趣味。無駄な支出には非常に厳しいリアリストです。", best: "現代の錬金術師", worst: "愛され上手なタニマチ", status: [5,4,1,5,2] },
         "INTJ": { name: "現代の錬金術師", img: "type5.png", catch: "「私が寝ている間も、私の仕組みが稼いでいる」", bio: "株・不動産・自動化ビジネスを組み合わせ、一歩も家から出ずに富を増殖させる天才システム屋。自分が動かなくても回る不労所得の仕組みを作るのが天才的で、資産が増える数字を眺めるのが至福の時。", best: "プロフェッショナル・ボス", worst: "気まぐれな神様", status: [4,5,2,2,1] },
         "ISTJ": { name: "要塞の守護神", img: "type6.png", catch: "「お金を増やす最良の方法は、使わないことだ」", bio: "1円の無駄も許さない鉄壁のディフェンス。地味に見えて、気づけば一番資産を持っている大番頭。徹底的にリスクを排除した守りのポートフォリオで資産を絶対に減らさない、信頼の塊です。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,2,2,0] },
-        "INTP": { name: "孤独の隠者（FIREマスター）", img: "type7.png", catch: "「お金で買える最高の商品は、高級車ではなく『時間』だ」", bio: "数億円の資産を持ちながらも、見た目は完全に一般人。週休7日の「自由」を買った思想家。物欲が驚くほど低く、しがらみから解き放たれて自分の興味のある研究や趣味に没頭します。", best: "データ至上主義のAI", worst: "マハラジャ・キング", status: [3,4,3,1,1] },
+        "INTP": { name: "孤独の隠者（FIREマスター）", img: "type7.png", catch: "「お金で買える最高の商品は、高級車ではなく『時間』だ」", bio: "数億円の資産を持ちながらも、見た目は完全に一般人。週休7日の「自由」を買った思想家。物欲が驚くほど低く、しやらみから解き放たれて自分の興味のある研究や趣味に没頭します。", best: "データ至上主義のAI", worst: "マハラジャ・キング", status: [3,4,3,1,1] },
         "ISTP": { name: "データ至上主義のAI", img: "type8.png", catch: "「相場に感情はない。だから私も感情を持たない」", bio: "感情を100%排除し、期待値とアルゴリズムだけで淡々とお金をハッキングする孤高のクオンツ。直感や情での投資は一切せず、合理的な計算に基づき冷徹に資産を拡大していきます。", best: "孤独の隠者", worst: "愛の慈善家", status: [4,4,2,1,2] },
         "ISFP": { name: "美の蒐集家（コレクター）", img: "type9.png", catch: "「私が買うのはモノではない。歴史と美そのものだ」", bio: "自分の圧倒的な「好き」と「審美眼」に従った結果、それが歴史的資産になってしまう天才。アート、ヴィンテージなど自分の五感を刺激するものに全財産を注ぎ込み、結果的に大富豪になります。", best: "マハラジャ・キング", worst: "要塞の守護神", status: [3,2,4,2,5] },
         "INFJ": { name: "愛の慈善家（ビル・ゲイツ型）", img: "type10.png", catch: "「富の価値は、どれだけ集めたかではなく、どれだけ配ったかで決まる」", bio: "富を得た最終目的は「世界を救うこと」。お金を最高の徳に変える現代の聖人。医療、環境、貧困撲滅などの財団に数億円単位の寄付を平気で行います。私利私欲の散財はほぼゼロです。", best: "キングメーカー", worst: "データ至上主義のAI", status: [2,3,4,4,4] },
@@ -296,11 +397,51 @@
         "ISFJ": { name: "要塞の守護神", img: "type6.png", catch: "「堅実に守り、身近な人をそっと支える」", bio: "無駄遣いをせず、慎ましく堅実に資産を守り抜く安定の富豪。派手な生活は好まず、家族や本当に大切な人のためだけにそっとお金を使える、優しきディフェンダーです。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,3,2,1] }
     };
 
-    // タニマチ用（type14）
     const luckyType = { name: "愛され上手なタニマチ", img: "type14.png", catch: "「自分で稼ぐ必要ある？みんながくれるのに」", bio: "本人はガツガツ働いていないのに、なぜかお金持ちから莫大な資産やプレゼントを引き寄せる天性の愛されキャラ。人の懐に入るのが天才的に上手く、お財布愛され力だけで生き抜く大富豪。", best: "マハラジャ・キング", worst: "プロフェッショナル・ボス", status: [1,2,5,4,3] };
 
     let currentQuestionIndex = 0;
     let scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+
+    // 【追加】トップページ起動時に全16種の画像を自動セット＆スライドショー開始
+    window.onload = function() {
+        const container = document.getElementById('top-slideshow');
+        // type1〜type16の画像を動的生成
+        for (let i = 1; i <= 16; i++) {
+            const img = document.createElement('img');
+            img.src = `images/type${i}.png`;
+            img.alt = `キャラクター候補 ${i}`;
+            if (i === 1) img.classList.add('active'); // 最初の1枚を表示
+            container.appendChild(img);
+        }
+        startTopSlideshow();
+    };
+
+    // トップのスライドショー制御
+    function startTopSlideshow() {
+        const images = document.querySelectorAll('#top-slideshow img');
+        let currentIndex = 0;
+        
+        setInterval(() => {
+            if(images.length === 0) return;
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }, 2500); // 2.5秒ごとに滑らかに切り替え
+    }
+
+    // Instagramアプリ起動の特殊ロジック
+    function openInsta(e) {
+        e.preventDefault();
+        alert('画面のスクリーンショットを撮影しましたか？\nOKを押すとInstagramのストーリー（カメラ）が起動します。');
+        
+        // ユニバーサルリンク・ディープリンクを叩く
+        window.location.href = "instagram://camera";
+        
+        // アプリがインストールされていない場合のブラウザフォールバック
+        setTimeout(() => {
+            window.open("https://www.instagram.com/", "_blank");
+        }, 1500);
+    }
 
     function startQuiz() {
         document.getElementById('start-view').classList.add('hidden');
@@ -341,19 +482,16 @@
         
         let typeCode = typeA + typeB + typeC + typeD;
         
-        // ギャンブラーの特別分岐
         if (typeCode === "ESTP" && scores.E >= 9) {
             typeCode = "ENFJ_LUCKY";
         }
 
         let resultType = typeDatabase[typeCode] || typeDatabase["ESTP"];
 
-        // タニマチの特別分岐
         if (scores.E >= 10 && typeA === "I") {
             resultType = luckyType;
         }
 
-        // ステータス計算
         let finalStatus = [
             Math.min(5, Math.max(1, Math.round((scores.A + scores.B) / 4) + 1)),
             Math.min(5, Math.max(1, Math.round((scores.D + (12 - scores.B)) / 4))),
@@ -366,25 +504,33 @@
             finalStatus[i] = Math.round((finalStatus[i] + resultType.status[i]) / 2);
         }
 
-        // 画面への反映
+        let totalBaseScore = scores.A + scores.B + scores.C + scores.D;
+        let wealthPercent = Math.min(100, Math.max(10, Math.round((totalBaseScore * 1.2) + (scores.E * 2.3))));
+        let wealthStar = Math.min(5, Math.max(1, Math.round(wealthPercent / 20)));
+        finalStatus.push(wealthStar);
+
         document.getElementById('type-name').innerText = resultType.name;
         document.getElementById('catchphrase').innerText = resultType.catch;
         document.getElementById('bio-text').innerText = resultType.bio;
         document.getElementById('best-name').innerText = resultType.best;
         document.getElementById('worst-name').innerText = resultType.worst;
 
-        // 画像の読み込み
         document.getElementById('type-img').src = "images/" + resultType.img;
 
-        // チャートの描画
+        // 𝕏 ポストリンク設定
+        const shareText = encodeURIComponent(`【マネータイプ診断】私の大富豪タイプは『${resultType.name}』でした！\n💸 将来のお金持ち度：【${wealthPercent}%】\n\nもし大富豪になったらどんな資産家になる？あなたもここからチェックしてみよう！\n#マネータイプ診断 #大富豪IF診断`);
+        const shareUrl = encodeURIComponent(window.location.href);
+        document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
+
+        // チャート描画
         const ctx = document.getElementById('statusChart').getContext('2d');
         new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: ['攻撃力', '防御力', '幸運度', '影響力', '散財度'],
+                labels: ['攻撃力', '防御力', '幸運度', '影響力', '散財度', '将来の富豪度'],
                 datasets: [{
                     data: finalStatus,
-                    backgroundColor: 'rgba(214, 175, 55, 0.2)',
+                    backgroundColor: 'rgba(214, 175, 55, 0.15)',
                     borderColor: 'rgba(214, 175, 55, 1)',
                     borderWidth: 2,
                     pointBackgroundColor: 'rgba(214, 175, 55, 1)',
