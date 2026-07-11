@@ -7,8 +7,6 @@
     <title>マネータイプ診断 | もしも大富豪になったら？</title>
     <!-- Chart.js (レーダーチャート用) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- SVGアイコン表示用のFontAwesome (無料版) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #0d1117;
@@ -184,7 +182,6 @@
             margin-bottom: 20px;
         }
 
-        /* 【追加】結果画面での数値表示スタイル */
         .score-display {
             font-size: 22px;
             font-weight: bold;
@@ -259,6 +256,15 @@
         .btn-sns:hover {
             background-color: rgba(212, 175, 55, 0.1);
         }
+        
+        /* SVGアイコンのサイズと色調整 */
+        .btn-sns svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--accent-color);
+            transition: fill 0.2s;
+        }
+        
         .btn-line {
             background: linear-gradient(90deg, #06C755 0%, #05B34B 100%);
             color: #fff;
@@ -267,6 +273,9 @@
         .btn-line:hover {
             background: linear-gradient(90deg, #05B34B 0%, #049A40 100%);
             opacity: 0.9;
+        }
+        .btn-line svg {
+            fill: #fff;
         }
         .insta-note {
             font-size: 11px;
@@ -316,7 +325,6 @@
             <img id="type-img" src="" alt="キャラクター画像" class="active">
         </div>
 
-        <!-- 【追加】結果画面に「将来のお金持ち度」の数値をわかりやすく表示 -->
         <div id="score-text" class="score-display">将来のお金持ち度: --%</div>
 
         <div class="chart-container">
@@ -336,23 +344,25 @@
             </div>
         </div>
 
-        <!-- 【修正】ご指定の文字表記（POST / STORY）にアップデート -->
         <div class="action-area">
             <div class="sns-row">
-                <!-- 𝕏 アイコン + POST -->
+                <!-- X -->
                 <a href="#" id="share-x" class="btn-sns" target="_blank">
-                    <i class="fa-brands fa-x-twitter"></i> POST
+                    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    POST
                 </a>
-                <!-- Instagram アイコン + STORY -->
+                <!-- Instagram -->
                 <a href="instagram://camera" id="share-insta" class="btn-sns" onclick="openInsta(event)">
-                    <i class="fa-brands fa-instagram"></i> STORY
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    STORY
                 </a>
             </div>
             <div class="insta-note">※スクショを撮ってからSTORYボタンを押してね！</div>
             
-            <!-- LINEスタンプ導線 -->
+            <!-- LINE -->
             <a href="https://line.me/S/shop/sticker/..." id="line-stamp-link" class="btn-sns btn-line" target="_blank">
-                <i class="fa-brands fa-line"></i> このキャラのLINEスタンプをGET
+                <svg viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.121.303.079.778.039 1.084l-.171 1.027c-.052.31-.252 1.212 1.09 0 1.341-1.213 7.238-4.262 9.871-7.3 2.117-2.315 2.088-5.011 2.088-5.011zm-16.142.922h-1.895a.366.366 0 0 1-.366-.366v-3.41a.366.366 0 0 1 .366-.366.366.366 0 0 1 .366.366v3.044h1.529a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366zm2.758-.366a.366.366 0 0 1-.366.366h-.002a.366.366 0 0 1-.366-.366v-3.41a.366.366 0 0 1 .366-.366.366.366 0 0 1 .366.366v3.41zm5.093 0a.366.366 0 0 1-.365.366h-.002a.37.37 0 0 1-.26-.107l-1.991-2.617v2.358a.366.366 0 0 1-.366.366.366.366 0 0 1-.366-.366v-3.41a.367.367 0 0 1 .571-.304l2.056 2.703v-2.4a.366.366 0 0 1 .366-.366.366.366 0 0 1 .366.366v3.411zm3.763-.733h-1.529v-.636h1.529a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366h-1.529v-.602h1.529a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366h-1.895a.366.366 0 0 1-.366-.366v-3.41a.366.366 0 0 1 .366-.366h1.895a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366z"/></svg>
+                このキャラのLINEスタンプをGET
             </a>
         </div>
 
@@ -391,7 +401,7 @@
         "ESFP": { name: "マハラジャ・キング", img: "type2.png", catch: "「お金で買えない価値？まずは買ってから言ってみな」", bio: "入ってきたお金は最高の方法で使い切る、経済を回す主役にしてリアル・エンターテイナー。タワマン、スーパーカーなど誰もが一目でわかる富の象徴を愛します。ケチケチした計算は大嫌いな豪快タイプ。", best: "美の蒐集家", worst: "孤独の隠者", status: [4,1,3,4,5] },
         "ENFJ": { name: "キングメーカー", img: "type3.png", catch: "「私が投資しているのは、ビジネスではなく『あなた』だ」", bio: "「人脈こそが最大の資産」を体現する、若手育成とコミュニティ投資の黒幕。才能ある若者やベンチャーのエンジェル投資家になり、信頼関係のネットワークを構築することに無上の喜びを感じます。", best: "ストリートの革命児", worst: "データ至上主義のAI", status: [3,3,4,5,3] },
         "ESTJ": { name: "プロフェッショナル・ボス", img: "type4.png", catch: "「運に頼るな。数字と実績だけを信じろ」", bio: "自分の圧倒的なスキルと労働、精度高く構築した組織の力でロジカルに稼ぐマシーン。贅沢そのものよりも市場で勝ち、稼ぐプロセスそのものが趣味。無駄な支出には非常に厳しいリアリストです。", best: "現代の錬金術師", worst: "愛され上手なタニマチ", status: [5,4,1,5,2] },
-        "INTJ": { name: "現代の錬金術師", img: "type5.png", catch: "「私が寝ている間も、私の仕組みが稼いでいる」", bio: "株・不動産・自動化ビジネスを組み合わせ、一歩も家から出ずに富を増殖させる天才システム屋。自分が動かなくても回る不労所得の仕組みを作るのが天才的で、資産が増える数字を眺めるのが至福の時。", best: "プロフェッショナル・ボス", worst: "気まぐれな神様", status: [4,5,2,2,1] },
+        "INTJ": { name: "現代の錬金術師", img: "type5.png", catch: "「私が寝ている間も、私の仕組みが稼いでいる」", bio: "株・不動産・自動化ビジネスを組み合わせ、一歩も家から出ずに富を増殖させる天才システム屋。自分が動かなくても回る不労所得の仕組みを作るのが天才的な、理系大富豪。", best: "プロフェッショナル・ボス", worst: "気まぐれな神様", status: [4,5,2,2,1] },
         "ISTJ": { name: "要塞の守護神", img: "type6.png", catch: "「お金を増やす最良の方法は、使わないことだ」", bio: "1円の無駄も許さない鉄壁のディフェンス。地味に見えて、気づけば一番資産を持っている大番頭。徹底的にリスクを排除した守りのポートフォリオで資産を絶対に減らさない、信頼の塊です。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,2,2,0] },
         "INTP": { name: "孤独の隠者（FIREマスター）", img: "type7.png", catch: "「お金で買える最高の商品は、高級車ではなく『時間』だ」", bio: "数億円の資産を持ちながらも、見た目は完全に一般人。週休7日の「自由」を買った思想家。物欲が驚くほど低く、しがらみから解き放たれて自分の興味のある研究や趣味に没頭します。", best: "データ至上主義のAI", worst: "マハラジャ・キング", status: [3,4,3,1,1] },
         "ISTP": { name: "データ至上主義のAI", img: "type8.png", catch: "「相場に感情はない。だから私も感情を持たない」", bio: "感情を100%排除し、期待値とアルゴリズムだけで淡々とお金をハッキングする孤高のクオンツ。直感や情での投資は一切せず、合理的な計算に基づき冷徹に資産を拡大していきます。", best: "孤独の隠者", worst: "愛の慈善家", status: [4,4,2,1,2] },
@@ -403,7 +413,7 @@
         "ENFJ_LUCKY": { name: "強運のギャンブラー", img: "type13.png", catch: "「ロジックが死んでも、俺の直感は生きている」", bio: "圧倒的な「野生の勘」で勝負所を当て続ける一発逆転の天才。仮想通貨や暴落株に「波が来ている」という直感だけで全賭けし大富豪になったタイプ。土壇場での引きの強さがカンストしています。", best: "ロマン派の冒険家", worst: "シリコンバレーの風雲児", status: [4,1,5,3,4] },
         "INFP": { name: "ストリートの革命児", img: "type15.png", catch: "「みんなが気づいた時には、もう私の仕込みは終わっている」", bio: "時代の微かな空気感を察知し、SNSやWEBの波に乗って一瞬で億を掴んだトレンドの申し子。個人の発信力やコンテンツのバズらせ方が天才的で、既存の枠に囚われない新しい稼ぎ方を開拓します。", best: "キングメーカー", worst: "要塞の守護神", status: [4,2,4,4,3] },
         "ESFJ": { name: "気まぐれな神様", img: "type16.png", catch: "「お金を配れば、みんなが笑顔になる。これ以上の使い道がある？」", bio: "お金を使って人を驚かせたり、喜ばせたりすることが生きがいのリアル福の神。飲食店に行けば店中の人に奢り、SNSではド派手なプレゼント企画を連発。お金を出すことで主役になる劇場型大富豪。", best: "沼の主", worst: "現代の錬金術師", status: [3,1,4,5,5] },
-        "ISFJ": { name: "要塞の守護神", img: "type6.png", catch: "「堅実に守り、身近な人をそっと支える」", bio: "無駄遣いをせず、慎ましく堅実に資産を守り抜く安定の富豪。派手な生活は好まず、家族や本当に大切な人のためだけにそっとお金を使える、優しきディフェンダーです。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,3,2,1] }
+        "ISFJ": { name: "要塞の守護神", img: "type6.png", catch: "「堅実に守り、身近な人をそっと支える」", bio: "無駄使いをせず、慎ましく堅実に資産を守り抜く安定の富豪。派手な生活は好まず、家族や本当に大切な人のためだけにそっとお金を使える、優しきディフェンダーです。", best: "シリコンバレーの風雲児", worst: "ロマン派の冒険家", status: [2,5,3,2,1] }
     };
 
     const luckyType = { name: "愛され上手なタニマチ", img: "type14.png", catch: "「自分で稼ぐ必要ある？みんながくれるのに」", bio: "本人はガツガツ働いていないのに、なぜかお金持ちから莫大な資産やプレゼントを引き寄せる天性の愛されキャラ。人の懐に入るのが天才的に上手く、お財布愛され力だけで生き抜く大富豪。", best: "マハラジャ・キング", worst: "プロフェッショナル・ボス", status: [1,2,5,4,3] };
@@ -413,14 +423,16 @@
 
     window.onload = function() {
         const container = document.getElementById('top-slideshow');
-        for (let i = 1; i <= 16; i++) {
-            const img = document.createElement('img');
-            img.src = `images/type${i}.png`;
-            img.alt = `キャラクター候補 ${i}`;
-            if (i === 1) img.classList.add('active');
-            container.appendChild(img);
+        if (container) {
+            for (let i = 1; i <= 16; i++) {
+                const img = document.createElement('img');
+                img.src = `images/type${i}.png`;
+                img.alt = `キャラクター候補 ${i}`;
+                if (i === 1) img.classList.add('active');
+                container.appendChild(img);
+            }
+            startTopSlideshow();
         }
-        startTopSlideshow();
     };
 
     function startTopSlideshow() {
@@ -516,45 +528,52 @@
         document.getElementById('best-name').innerText = resultType.best;
         document.getElementById('worst-name').innerText = resultType.worst;
 
-        // 【変更】結果画面のテキスト要素へ計算した数値を反映
         document.getElementById('score-text').innerText = `将来のお金持ち度: ${wealthPercent}%`;
 
         document.getElementById('type-img').src = "images/" + resultType.img;
 
-        // 𝕏 ポストリンク設定
+        // X ポストリンク設定
         const shareText = encodeURIComponent(`【マネータイプ診断】私の大富豪タイプは『${resultType.name}』でした！\n💸 将来のお金持ち度：【${wealthPercent}%】\n\nもし大富豪になったらどんな資産家になる？あなたもここからチェックしてみよう！\n#マネータイプ診断 #大富豪IF診断`);
         const shareUrl = encodeURIComponent(window.location.href);
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
 
-        // チャート描画
-        const ctx = document.getElementById('statusChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: ['攻撃力', '防御力', '幸運度', '影響力', '散財度', '将来の富豪度'],
-                datasets: [{
-                    data: finalStatus,
-                    backgroundColor: 'rgba(214, 175, 55, 0.15)',
-                    borderColor: 'rgba(214, 175, 55, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgba(214, 175, 55, 1)',
-                    pointRadius: 3
-                }]
-            },
-            options: {
-                plugins: { legend: { display: false } },
-                scales: {
-                    r: {
-                        angleLines: { color: '#30363d' },
-                        grid: { color: '#30363d' },
-                        pointLabels: { color: '#c9d1d9', font: { size: 12 } },
-                        ticks: { display: false },
-                        min: 0,
-                        max: 5
+        // チャート描画（セキュリティブロックを考慮した安全弁付き）
+        try {
+            if (typeof Chart !== 'undefined') {
+                const ctx = document.getElementById('statusChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['攻撃力', '防御力', '幸運度', '影響力', '散財度', '将来の富豪度'],
+                        datasets: [{
+                            data: finalStatus,
+                            backgroundColor: 'rgba(214, 175, 55, 0.15)',
+                            borderColor: 'rgba(214, 175, 55, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(214, 175, 55, 1)',
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            r: {
+                                angleLines: { color: '#30363d' },
+                                grid: { color: '#30363d' },
+                                pointLabels: { color: '#c9d1d9', font: { size: 12 } },
+                                ticks: { display: false },
+                                min: 0,
+                                max: 5
+                            }
+                        }
                     }
-                }
+                });
+            } else {
+                console.warn('Chart.js がブロックされたか読み込めなかったため、レーダーチャートの描画をスキップします。');
             }
-        });
+        } catch (chartError) {
+            console.error('チャートの描画処理でエラーが発生しました:', chartError);
+        }
     }
 </script>
 </body>
