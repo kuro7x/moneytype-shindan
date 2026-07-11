@@ -2,16 +2,14 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <!-- スマホでの強制ズーム・画面拡大を防ぐ設定 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>マネータイプ診断 | もしも大富豪になったら？</title>
-    <!-- Chart.js (レーダーチャート用) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --bg-color: #0d1117;
             --card-bg: #161b22;
-            --accent-color: #d4af37; /* ゴールド */
+            --accent-color: #d4af37;
             --text-color: #c9d1d9;
             --text-bright: #ffffff;
             --btn-hover: #f3d06c;
@@ -79,7 +77,6 @@
             transform: translateY(-2px);
         }
 
-        /* 診断中画面 */
         .hidden { display: none !important; }
         
         .progress-bar {
@@ -129,7 +126,6 @@
             border-color: var(--accent-color);
         }
 
-        /* 結果画面 */
         .result-title {
             font-size: 16px;
             color: var(--accent-color);
@@ -149,7 +145,6 @@
             font-size: 14px;
         }
         
-        /* 画像表示エリア */
         .character-img-box {
             position: relative;
             width: 200px;
@@ -224,7 +219,6 @@
         .comp-title { font-weight: bold; margin-bottom: 5px; }
         .comp-name { color: var(--text-bright); font-size: 13px; }
 
-        /* ボタンエリア */
         .action-area {
             margin-top: 30px;
             display: flex;
@@ -257,7 +251,6 @@
             background-color: rgba(212, 175, 55, 0.1);
         }
         
-        /* SVGアイコンのサイズと色調整 */
         .btn-sns svg {
             width: 16px;
             height: 16px;
@@ -288,21 +281,18 @@
 <body>
 
 <div class="container">
-    <!-- START PAGE -->
     <div id="start-view" class="card">
         <h1>マネータイプ診断</h1>
         <p class="description">もしもあなたが大富豪になったら、どんな資産家になる？<br>あなたの稼ぎ方・使い方の癖から、眠れる富豪タイプとステータスを暴き出す16タイプ診断。</p>
         
         <div class="hero-box">
             <div class="character-img-box" id="top-slideshow">
-                <!-- JavaScriptで16枚の画像が自動生成されます -->
             </div>
         </div>
         
         <button class="btn" onclick="startQuiz()">診断をスタートする</button>
     </div>
 
-    <!-- QUIZ PAGE -->
     <div id="quiz-view" class="card hidden">
         <div class="progress-bar"><div id="progress" class="progress"></div></div>
         <div id="question-text" class="question-text">質問がここに表示されます</div>
@@ -314,13 +304,11 @@
         </div>
     </div>
 
-    <!-- RESULT PAGE -->
     <div id="result-view" class="card hidden">
         <div class="result-title">YOUR TYPE IS...</div>
         <div id="type-name" class="type-name">診断中...</div>
         <div id="catchphrase" class="catchphrase">...</div>
         
-        <!-- 結果画像表示枠 -->
         <div class="character-img-box">
             <img id="type-img" src="" alt="キャラクター画像" class="active">
         </div>
@@ -346,12 +334,10 @@
 
         <div class="action-area">
             <div class="sns-row">
-                <!-- X -->
                 <a href="#" id="share-x" class="btn-sns" target="_blank">
                     <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     POST
                 </a>
-                <!-- Instagram -->
                 <a href="instagram://camera" id="share-insta" class="btn-sns" onclick="openInsta(event)">
                     <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                     STORY
@@ -359,7 +345,6 @@
             </div>
             <div class="insta-note">※スクショを撮ってからSTORYボタンを押してね！</div>
             
-            <!-- LINE -->
             <a href="https://line.me/S/shop/sticker/..." id="line-stamp-link" class="btn-sns btn-line" target="_blank">
                 <svg viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.121.303.079.778.039 1.084l-.171 1.027c-.052.31-.252 1.212 1.09 0 1.341-1.213 7.238-4.262 9.871-7.3 2.117-2.315 2.088-5.011 2.088-5.011zm-16.142.922h-1.895a.366.366 0 0 1-.366-.366v-3.41a.366.366 0 0 1 .366-.366.366.366 0 0 1 .366.366v3.044h1.529a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366zm2.758-.366a.366.366 0 0 1-.366.366h-.002a.366.366 0 0 1-.366-.366v-3.41a.366.366 0 0 1 .366-.366.366.366 0 0 1 .366.366v3.41zm5.093 0a.366.366 0 0 1-.365.366h-.002a.37.37 0 0 1-.26-.107l-1.991-2.617v2.358a.366.366 0 0 1-.366.366.366.366 0 0 1-.366-.366v-3.41a.367.367 0 0 1 .571-.304l2.056 2.703v-2.4a.366.366 0 0 1 .366-.366.366.366 0 0 1 .366.366v3.411zm3.763-.733h-1.529v-.636h1.529a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366h-1.529v-.602h1.529a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366h-1.895a.366.366 0 0 1-.366-.366v-3.41a.366.366 0 0 1 .366-.366h1.895a.366.366 0 0 1 .366.366.366.366 0 0 1-.366.366z"/></svg>
                 このキャラのLINEスタンプをGET
@@ -371,7 +356,6 @@
 </div>
 
 <script>
-    // 20問の質問データ
     const questions = [
         { id: 1, text: "収入を増やすなら、節約するより「新しいビジネスや副業で稼ぐ額を増やす」方がワクワクする。" },
         { id: 2, text: "大金を手に入れたら、静かに一人で引きこもるより、盛大なパーティーや旅行で仲間とパーッと使いたい。" },
@@ -395,7 +379,6 @@
         { id: 20, text: "根拠はなくても、「自分は将来、なんだかんだでお金に困らない人生を送るだろう」という謎の自信がある。" }
     ];
 
-    // 16タイプのデータ
     const typeDatabase = {
         "ESTP": { name: "シリコンバレーの風雲児", img: "type1.png", catch: "「リスクは取るものではない。マネジメントするものだ」", bio: "破壊的なイノベーションと圧倒的な行動力で、ゼロから巨万の富を築き上げるカリスマ起業家。お金は次の面白いビジネスを仕掛けるための「弾丸」。新しい波に全財産を突っ込む度胸の持ち主。", best: "要塞の守護神", worst: "強運のギャンブラー", status: [5,1,4,5,4] },
         "ESFP": { name: "マハラジャ・キング", img: "type2.png", catch: "「お金で買えない価値？まずは買ってから言ってみな」", bio: "入ってきたお金は最高の方法で使い切る、経済を回す主役にしてリアル・エンターテイナー。タワマン、スーパーカーなど誰もが一目でわかる富の象徴を愛します。ケチケチした計算は大嫌いな豪快タイプ。", best: "美の蒐集家", worst: "孤独の隠者", status: [4,1,3,4,5] },
@@ -409,7 +392,7 @@
         "INFJ": { name: "愛の慈善家（ビル・ゲイツ型）", img: "type10.png", catch: "「富の価値は、どれだけ集めたかではなく、どれだけ配ったかで決まる」", bio: "富を得た最終目的は「世界を救うこと」。お金を最高の徳に変える現代の聖人。医療、環境、貧困撲滅などの財団に数億円単位の寄付を平気で行います。私利私欲の散財はほぼゼロです。", best: "キングメーカー", worst: "データ至上主義のAI", status: [2,3,4,4,4] },
         "ENFP": { name: "沼の主（ぬしのぬし）", img: "type11.png", catch: "「私の課金が、このコンテンツを延命させている」", bio: "自分の「推し」や「エンタメ」の市場を一人で支える、究極のパトロンにして最強の消費者。自分が「尊い」と思った対象に底なしの資金を注ぎ込み、業界の神として崇められる大富豪です。", best: "気まぐれな神様", worst: "プロフェッショナル・ボス", status: [3,1,4,4,5] },
         "ENTP": { name: "ロマン派の冒険家", img: "type12.png", catch: "「成功するかは分からない。だからこそ、大金を払う価値がある」", bio: "知的好奇心の塊。誰も挑戦していない未開拓なプロジェクトや、面白そうな企画に一瞬で大金を投じる仕掛け人。スリルと新しい体験をお金で買うため、支出もダイナミックです。", best: "強運のギャンブラー", worst: "要塞の守護神", status: [4,1,3,5,5] },
-        "ENTJ": { name: "ロマン派の冒険家", img: "type12.png", catch: "「成功するかは分からない。だからこそ、大金を払う価値がある」", bio: "「誰も見たことがない景色」を見るためなら、数億ドルのドブ捨ても厭わない宇宙開拓者。現状維持が大嫌いで、スリルと知的好奇心を満たすためにお金を使います。失敗しても折れないメンタルが最強。", best: "強運のギャンブラー", worst: "要塞の守護神", status: [4,1,3,5,5] },
+        "ENTJ": { name: "ロマン派の冒険家", img: "type12.png", catch: "「成功するかは分からない。だからこそ、大金を払う価値がある」", bio: "「誰も見たことがない景色」を見るためなら、数億ドルのドブ捨ても厭わない宇宙開拓者。現状維持が大嫌いで、スリルと知的好奇心を満たすためにお集めします。失敗しても折れないメンタルが最強。", best: "強運のギャンブラー", worst: "要塞の守護神", status: [4,1,3,5,5] },
         "ENFJ_LUCKY": { name: "強運のギャンブラー", img: "type13.png", catch: "「ロジックが死んでも、俺の直感は生きている」", bio: "圧倒的な「野生の勘」で勝負所を当て続ける一発逆転の天才。仮想通貨や暴落株に「波が来ている」という直感だけで全賭けし大富豪になったタイプ。土壇場での引きの強さがカンストしています。", best: "ロマン派の冒険家", worst: "シリコンバレーの風雲児", status: [4,1,5,3,4] },
         "INFP": { name: "ストリートの革命児", img: "type15.png", catch: "「みんなが気づいた時には、もう私の仕込みは終わっている」", bio: "時代の微かな空気感を察知し、SNSやWEBの波に乗って一瞬で億を掴んだトレンドの申し子。個人の発信力やコンテンツのバズらせ方が天才的で、既存の枠に囚われない新しい稼ぎ方を開拓します。", best: "キングメーカー", worst: "要塞の守護神", status: [4,2,4,4,3] },
         "ESFJ": { name: "気まぐれな神様", img: "type16.png", catch: "「お金を配れば、みんなが笑顔になる。これ以上の使い道がある？」", bio: "お金を使って人を驚かせたり、喜ばせたりすることが生きがいのリアル福の神。飲食店に行けば店中の人に奢り、SNSではド派手なプレゼント企画を連発。お金を出すことで主役になる劇場型大富豪。", best: "沼の主", worst: "現代の錬金術師", status: [3,1,4,5,5] },
@@ -420,6 +403,7 @@
 
     let currentQuestionIndex = 0;
     let scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+    let wealthScores = [];
 
     window.onload = function() {
         const container = document.getElementById('top-slideshow');
@@ -438,7 +422,6 @@
     function startTopSlideshow() {
         const images = document.querySelectorAll('#top-slideshow img');
         let currentIndex = 0;
-        
         setInterval(() => {
             if(images.length === 0) return;
             images[currentIndex].classList.remove('active');
@@ -475,6 +458,22 @@
         else if (currentQuestionIndex < 16) scores.D += points;
         else scores.E += points;
 
+        // 【新ロジック】ENTJ/ENTPがリアル大富豪として最強100%になる判定
+        let wPoint = 0;
+        const qId = currentQuestionIndex + 1;
+
+        if ([1, 3, 4, 7, 9, 11, 18, 20].includes(qId)) {
+            // 稼ぐ力・リスクテイク・人脈・野心（ENTJが得意な大富豪ムーブ）➔ 純加点
+            wPoint = points; 
+        } else if ([5, 6, 8, 15].includes(qId)) {
+            // 純粋な無駄遣い・見栄・衝動買い ➔ 減点（当てはまらないほどプラス）
+            wPoint = 3 - points; 
+        } else {
+            // 管理能力・その他のビジネス素養 ➔ バランス重視の微加点
+            wPoint = points * 0.7;
+        }
+        wealthScores.push(wPoint);
+
         currentQuestionIndex++;
 
         if (currentQuestionIndex < questions.length) {
@@ -488,6 +487,7 @@
         document.getElementById('quiz-view').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
 
+        // 【確率均等化システム】無作為に選んでも中央値(6点)を基準に1/2の確率で綺麗に分岐させる
         const typeA = scores.A >= 6 ? "E" : "I";
         const typeB = scores.B >= 6 ? "S" : "N";
         const typeC = scores.C >= 6 ? "T" : "F";
@@ -505,6 +505,13 @@
             resultType = luckyType;
         }
 
+        // --- 富豪度パーセンテージ精密計算（満点：38.8点） ---
+        let totalWealthPoint = wealthScores.reduce((sum, p) => sum + p, 0);
+        
+        // 最低20%、最高100%になる精密スケーリング数式
+        let wealthPercent = Math.round(20 + (totalWealthPoint / 38.8) * 80);
+        wealthPercent = Math.min(100, Math.max(20, wealthPercent));
+
         let finalStatus = [
             Math.min(5, Math.max(1, Math.round((scores.A + scores.B) / 4) + 1)),
             Math.min(5, Math.max(1, Math.round((scores.D + (12 - scores.B)) / 4))),
@@ -517,8 +524,6 @@
             finalStatus[i] = Math.round((finalStatus[i] + resultType.status[i]) / 2);
         }
 
-        let totalBaseScore = scores.A + scores.B + scores.C + scores.D;
-        let wealthPercent = Math.min(100, Math.max(10, Math.round((totalBaseScore * 1.2) + (scores.E * 2.3))));
         let wealthStar = Math.min(5, Math.max(1, Math.round(wealthPercent / 20)));
         finalStatus.push(wealthStar);
 
@@ -529,15 +534,12 @@
         document.getElementById('worst-name').innerText = resultType.worst;
 
         document.getElementById('score-text').innerText = `将来のお金持ち度: ${wealthPercent}%`;
-
         document.getElementById('type-img').src = "images/" + resultType.img;
 
-        // X ポストリンク設定
         const shareText = encodeURIComponent(`【マネータイプ診断】私の大富豪タイプは『${resultType.name}』でした！\n💸 将来のお金持ち度：【${wealthPercent}%】\n\nもし大富豪になったらどんな資産家になる？あなたもここからチェックしてみよう！\n#マネータイプ診断 #大富豪IF診断`);
         const shareUrl = encodeURIComponent(window.location.href);
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
 
-        // チャート描画（セキュリティブロックを考慮した安全弁付き）
         try {
             if (typeof Chart !== 'undefined') {
                 const ctx = document.getElementById('statusChart').getContext('2d');
@@ -568,8 +570,6 @@
                         }
                     }
                 });
-            } else {
-                console.warn('Chart.js がブロックされたか読み込めなかったため、レーダーチャートの描画をスキップします。');
             }
         } catch (chartError) {
             console.error('チャートの描画処理でエラーが発生しました:', chartError);
